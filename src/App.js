@@ -60,6 +60,7 @@ function App() {
             neighbors += board[newI][newJ];
           }
         });
+        // si tiene menos de dos celulas vecinas vivias o mas de 3 muere la celula
         if(neighbors < 2 || neighbors > 3){
           boardCopy[i][j] = 0;
           // si hay tres celula vivias y una muerta, esta celula muerta, "vivira" al siguiente turno
