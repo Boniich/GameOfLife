@@ -1,10 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
+import { useInterval } from "./hooks/useInterval";
 
 
 let boardRows = 30;
 let boardCols = 50;
 
+
+// uso estas posiciones para determinar las celulas vecinas que pueden estar vivas o muertas
 const positions = [
   [0, 1],
   [0, -1],
@@ -15,24 +18,6 @@ const positions = [
   [1, 0],
   [-1, 0],
 ];
-
-function useInterval(callback,delay) {
-  const savedCallback = useRef(callback);
-
-  useEffect(() => {
-    savedCallback.current = callback;
-  }, [callback]);
-
-  useEffect(() => {
-    if (delay === null) {
-      return;
-    }
-
-    const id = setInterval(() => savedCallback.current(), delay);
-
-    return () => clearInterval(id);
-  }, [delay]);
-}
 
 
 // generamos el tablero
@@ -51,6 +36,8 @@ function App() {
   const [start, setStart] = useState(false);
   const [turn, setTurn] = useState(0);
 
+  // creamos una referencia del valor de inicio y pausa para poder actualizar 
+  // el valor durante la simulacion
   const runningRef = useRef(start);
   runningRef.current = start;
 
@@ -59,6 +46,7 @@ function App() {
     if(!runningRef.current){
       return;
     }
+
     setTurn((turn) => turn += 1);
     let boardCopy = JSON.parse(JSON.stringify(board));
     for(let i = 0; i < boardRows; i++){
@@ -74,6 +62,7 @@ function App() {
         });
         if(neighbors < 2 || neighbors > 3){
           boardCopy[i][j] = 0;
+          // si hay tres celula vivias y una muerta, esta celula muerta, "vivira" al siguiente turno
         }else if(boardCopy[i][j] === 0 && neighbors === 3){
           boardCopy[i][j] = 1;
         }
@@ -83,6 +72,7 @@ function App() {
     setBoard(boardCopy);
   },[])
 
+  // imprimimos el teclado cuando se inicia la pagina
   useEffect(() => {
     setBoard(printBoard());
   }, []);
@@ -99,15 +89,16 @@ function App() {
   };
 
   // reseteamos todos los valores
-  // el board se reinicia simplemente llamando al tablero inicial
   const reset = () => {
     setStart(false);
     setTurn(0);
+    // reiniciamos el table usando tablero inicial, ya que todos los valores son de 0
     setBoard(printBoard());
   };
 
+  // este es un custom hooks que encontre que resuelve un problema entre el setInterval y react
+  // de otra manera el setInterval se ejecutaba una sola vez y solo una
   useInterval(() =>{
-    
     runSimulation(board);
   },1000)
 
