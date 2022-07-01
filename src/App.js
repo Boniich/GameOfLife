@@ -21,6 +21,7 @@ function App() {
   const [turn, setTurn] = useState(0);
   const [boardRows, setBoardRows] = useState(30);
   const [boardCols, setBoardCols] = useState(50);
+  const [delay,setDelay] = useState(1000);
 
   // creamos una referencia del valor de inicio y pausa para poder actualizar
   // el valor durante la simulacion
@@ -56,12 +57,15 @@ function App() {
     }
 
     setBoard(boardCopy);
-  }, []);
+  }, [boardRows,boardCols]);
 
   // imprimimos el teclado cuando se inicia la pagina
   useEffect(() => {
-    setBoard(printBoard(boardRows,boardCols));
-  }, []);
+    const board = printBoard(boardRows,boardCols)
+    console.log("row:",boardRows);
+    setBoard(board);
+    console.log(board);
+  }, [boardRows,boardCols]);
 
   const startGame = () => {
     setStart(true);
@@ -86,7 +90,10 @@ function App() {
   // de otra manera el setInterval se ejecutaba una sola vez y solo una
   useInterval(() => {
     runSimulation(board);
-  }, 1000);
+  }, delay);
+
+  console.log(boardRows);
+  console.log(boardCols);
 
   return (
     <section className="game-section">
@@ -95,6 +102,9 @@ function App() {
           <button onClick={startGame}>Iniciar</button>
           <button onClick={stopGame}>Detener</button>
           <button onClick={reset}>Reiniciar</button>
+          <input type="number"  value={boardRows} onChange={e => setBoardRows(e.target.value)}/>
+          <input type="number"  value={boardCols} onChange={e => setBoardCols(e.target.value)}/>
+          <input type="number"  value={delay} onChange={e => setDelay(e.target.value)}/>
         </div>
         <div>
           <p>Generacion: {turn}</p>
