@@ -3,7 +3,6 @@ import "./App.css";
 import { useInterval } from "./hooks/useInterval";
 import { printBoard } from "./services/printBoard/printBoard";
 import Popup from "reactjs-popup";
-import { validate } from "./services/validate/validate";
 import { positions } from "./consts";
 import {
   loadSavedGameFromStorage,
@@ -15,9 +14,11 @@ function App() {
   const [savedGame, setSavedGame] = useState([]);
   const [start, setStart] = useState(false);
   const [turn, setTurn] = useState(0);
-  const [boardRows, setBoardRows] = useState(30);
-  const [boardCols, setBoardCols] = useState(50);
-  const [delay, setDelay] = useState(1000);
+  const [config, setConfig] = useState({
+    boardRows: 30,
+    boardCols: 50,
+    delay: 1000,
+  });
 
   // creamos una referencia del valor de inicio y pausa para poder actualizar
   // el valor durante la simulacion
@@ -32,8 +33,8 @@ function App() {
 
       setTurn((turn) => (turn += 1));
       let boardCopy = JSON.parse(JSON.stringify(board));
-      for (let i = 0; i < boardRows; i++) {
-        for (let j = 0; j < boardCols; j++) {
+      for (let i = 0; i < config.boardRows; i++) {
+        for (let j = 0; j < config.boardCols; j++) {
           let neighbors = 0;
           positions.forEach(([x, y]) => {
             const newI = i + x;
@@ -41,9 +42,9 @@ function App() {
 
             if (
               newI >= 0 &&
-              newI < boardRows &&
+              newI < config.boardRows &&
               newJ >= 0 &&
-              newJ < boardCols
+              newJ < config.boardCols
             ) {
               neighbors += board[newI][newJ];
             }
@@ -60,7 +61,7 @@ function App() {
 
       setBoard(boardCopy);
     },
-    [boardRows, boardCols]
+    [config.boardRows, config.boardCols]
   );
 
   // cargamos la lista de partidas guardas si existen previamente
@@ -70,9 +71,9 @@ function App() {
 
   // imprimimos el teclado cuando se inicia la pagina
   useEffect(() => {
-    const board = printBoard(boardRows, boardCols);
+    const board = printBoard(config);
     setBoard(board);
-  }, [boardRows, boardCols]);
+  }, [config]);
 
   const startGame = () => {
     setStart(true);
@@ -90,14 +91,14 @@ function App() {
     setStart(false);
     setTurn(0);
     // reiniciamos el table usando tablero inicial, ya que todos los valores son de 0
-    setBoard(printBoard(boardRows, boardCols));
+    setBoard(printBoard(config));
   };
 
   // este es un custom hooks que encontre que resuelve un problema entre el setInterval y react
   // de otra manera el setInterval se ejecutaba una sola vez y solo una
   useInterval(() => {
     runSimulation(board);
-  }, delay);
+  }, config.delay);
 
   // Cuando se presione el boton de "guardar"
   // guardara la partida actual
@@ -116,6 +117,7 @@ function App() {
       id = save[save.length - 1].id;
       saveGameInStorage([...save, { id: id + 1, board: board, turn: turn }]);
     }
+    // volvemos a traer el array para guardar los valores actualizados
     setSavedGame(loadSavedGameFromStorage());
   };
 
@@ -125,6 +127,17 @@ function App() {
     const savedTurn = save[index].turn;
     setBoard(savedBoard);
     setTurn(savedTurn);
+  };
+
+  const handleChange = (e) => {
+    if (start) {
+      alert("No puedes cambiar la configuracion con la simulacion iniciada");
+    } else {
+      setConfig({
+        ...config,
+        [e.target.name]: Number.parseInt(e.target.value),
+      });
+    }
   };
 
   return (
@@ -196,26 +209,22 @@ function App() {
                     <label className="labels-inputs">Filas</label>
                     <input
                       type="range"
-                      value={boardRows}
-                      onChange={(e) =>
-                        validate(start) === false &&
-                        setBoardRows(Number.parseInt(e.target.value))
-                      }
+                      name="boardRows"
+                      value={config.boardRows}
+                      onChange={handleChange}
                     />
-                    <p className="show-data-input">{boardRows}</p>
+                    <p className="show-data-input">{config.boardRows}</p>
                   </div>
 
                   <div className="inputs-container">
                     <label className="labels-inputs">Columnas</label>
                     <input
                       type="range"
-                      value={boardCols}
-                      onChange={(e) =>
-                        validate(start) === false &&
-                        setBoardCols(Number.parseInt(e.target.value))
-                      }
+                      name="boardCols"
+                      value={config.boardCols}
+                      onChange={handleChange}
                     />
-                    <p className="show-data-input">{boardCols}</p>
+                    <p className="show-data-input">{config.boardCols}</p>
                   </div>
 
                   <div className="inputs-container">
@@ -223,13 +232,11 @@ function App() {
                     <input
                       type="range"
                       max={10000}
-                      value={delay}
-                      onChange={(e) =>
-                        validate(start) === false &&
-                        setDelay(Number.parseInt(e.target.value))
-                      }
+                      name="delay"
+                      value={config.delay}
+                      onChange={handleChange}
                     />
-                    <p className="show-data-input">{delay}</p>
+                    <p className="show-data-input">{config.delay}</p>
                   </div>
                 </div>
                 <div className="actions">
@@ -254,7 +261,7 @@ function App() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: `repeat(${boardCols}, 25px)`,
+          gridTemplateColumns: `repeat(${config.boardCols}, 25px)`,
           width: "fit-content",
           margin: "0 auto",
         }}
