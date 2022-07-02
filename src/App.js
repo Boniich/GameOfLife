@@ -18,6 +18,7 @@ const positions = [
 
 function App() {
   const [board, setBoard] = useState();
+  const [savedGame,setSavedGame] = useState([]);
   const [start, setStart] = useState(false);
   const [turn, setTurn] = useState(0);
   const [boardRows, setBoardRows] = useState(30);
@@ -68,6 +69,10 @@ function App() {
     [boardRows, boardCols]
   );
 
+  useEffect(() =>{
+    setSavedGame(JSON.parse(localStorage.getItem("save")));
+  },[])
+
   // imprimimos el teclado cuando se inicia la pagina
   useEffect(() => {
     const board = printBoard(boardRows, boardCols);
@@ -112,26 +117,33 @@ function App() {
     }
   };
 
-  const saveBoard = () =>{
+  const saveBoard = () => {
     console.log("guardar");
     const save = JSON.parse(localStorage.getItem("save"));
-    if(save === null){
-      localStorage.setItem("save",JSON.stringify([{"id": 1,"board":board, "turn": turn}]));
-    }else{  
-      localStorage.setItem("save",JSON.stringify([...save,{"id": 1,"board":board, "turn": turn}]));
+    if (save === null) {
+      localStorage.setItem(
+        "save",
+        JSON.stringify([{ id: 1, board: board, turn: turn }])
+      );
+    } else {
+      localStorage.setItem(
+        "save",
+        JSON.stringify([...save, { id: 1, board: board, turn: turn }])
+      );
     }
-  }
-
-  const loadBoard = () =>{
+    setSavedGame(JSON.parse(localStorage.getItem("save")));
+  };
+  
+  const loadBoard = (index) => {
     const save = localStorage.getItem("save");
     console.log(save);
     const convertData = JSON.parse(save);
-    const savedBoard = convertData[2].board;
-    const savedTurn = convertData[2].turn;
+    const savedBoard = convertData[index].board;
+    const savedTurn = convertData[index].turn;
     console.log(savedBoard);
     setBoard(savedBoard);
     setTurn(savedTurn);
-  }
+  };
 
   return (
     <section className="game-section">
@@ -140,15 +152,52 @@ function App() {
           <button onClick={startGame}>Iniciar</button>
           <button onClick={stopGame}>Detener</button>
           <button onClick={reset}>Reiniciar</button>
-          <button onClick={loadBoard}>Cargar</button>
-          <button onClick={saveBoard}>Guardar</button>
-          <Popup trigger={<button>Configuracion</button>} modal closeOnDocumentClick={false} closeOnEscape={false}>
+
+          <Popup
+            trigger={<button>Cargar</button>}
+            modal
+            closeOnDocumentClick={false}
+            closeOnEscape={false}
+          >
             {(close) => (
               <div className="modal">
                 <button className="close" onClick={close}>
                   &times;
                 </button>
                 <div className="header"> Configuracion</div>
+                <div className="content">{
+                  savedGame.map((el,index) =>(
+                    <button onClick={() => {loadBoard(index)}}>{index}</button>
+                  ))
+                }</div>
+                <div className="actions">
+                  <button
+                    className="button"
+                    onClick={() => {
+                      console.log("modal closed ");
+                      close();
+                    }}
+                  >
+                    close modal
+                  </button>
+                </div>
+              </div>
+            )}
+          </Popup>
+          <button onClick={saveBoard}>Guardar</button>
+
+          <Popup
+            trigger={<button>Configuracion</button>}
+            modal
+            closeOnDocumentClick={false}
+            closeOnEscape={false}
+          >
+            {(close) => (
+              <div className="modal">
+                <button className="close" onClick={close}>
+                  &times;
+                </button>
+                <div className="header"> Carga una partida</div>
                 <div className="content">
                   <div className="inputs-container">
                     <label className="labels-inputs">Filas</label>
