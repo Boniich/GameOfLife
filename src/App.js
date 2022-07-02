@@ -18,7 +18,7 @@ const positions = [
 
 function App() {
   const [board, setBoard] = useState();
-  const [savedGame,setSavedGame] = useState([]);
+  const [savedGame, setSavedGame] = useState([]);
   const [start, setStart] = useState(false);
   const [turn, setTurn] = useState(0);
   const [boardRows, setBoardRows] = useState(30);
@@ -69,9 +69,10 @@ function App() {
     [boardRows, boardCols]
   );
 
-  useEffect(() =>{
+  // cargamos la lista de partidas guardas si existen previamente
+  useEffect(() => {
     setSavedGame(JSON.parse(localStorage.getItem("save")));
-  },[])
+  }, []);
 
   // imprimimos el teclado cuando se inicia la pagina
   useEffect(() => {
@@ -118,22 +119,24 @@ function App() {
   };
 
   const saveBoard = () => {
-    console.log("guardar");
     const save = JSON.parse(localStorage.getItem("save"));
+    let id = 0;
     if (save === null) {
       localStorage.setItem(
         "save",
         JSON.stringify([{ id: 1, board: board, turn: turn }])
       );
     } else {
+      id = save[save.length - 1].id;
+      console.log("id", save[save.length - 1].id);
       localStorage.setItem(
         "save",
-        JSON.stringify([...save, { id: 1, board: board, turn: turn }])
+        JSON.stringify([...save, { id: id + 1, board: board, turn: turn }])
       );
     }
     setSavedGame(JSON.parse(localStorage.getItem("save")));
   };
-  
+
   const loadBoard = (index) => {
     const save = localStorage.getItem("save");
     console.log(save);
@@ -144,6 +147,8 @@ function App() {
     setBoard(savedBoard);
     setTurn(savedTurn);
   };
+
+  console.log(savedGame);
 
   return (
     <section className="game-section">
@@ -165,11 +170,16 @@ function App() {
                   &times;
                 </button>
                 <div className="header"> Configuracion</div>
-                <div className="content">{
-                  savedGame.map((el,index) =>(
-                    <button onClick={() => {loadBoard(index)}}>{index}</button>
-                  ))
-                }</div>
+                <div className="content">
+                  {savedGame &&
+                    savedGame.map((el, index) => (
+                      <div key={index}>
+                        <p>Numero de Partida: {el.id}</p>
+                        <p>Turno: {el.turn}</p>
+                        {/* <button onClick={() => {loadBoard(index)}}>{index}</button> */}
+                      </div>
+                    ))}
+                </div>
                 <div className="actions">
                   <button
                     className="button"
