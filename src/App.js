@@ -76,7 +76,7 @@ function App() {
   useEffect(() => {
     const board = printBoard(config);
     setBoard(board);
-  }, [config]);
+  }, [config.boardCols,config.boardRows]);
 
   const startGame = () => {
     setStart(true);
