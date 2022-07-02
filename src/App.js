@@ -6,8 +6,8 @@ import Popup from "reactjs-popup";
 import { positions } from "./consts";
 import {
   loadSavedGameFromStorage,
-  saveGameInStorage,
 } from "./services/localStorageMethods";
+import { loadGame, saveGame } from "./services/loadAndSaveGame";
 
 function App() {
   const [board, setBoard] = useState();
@@ -100,35 +100,6 @@ function App() {
     runSimulation(board);
   }, config.delay);
 
-  // Cuando se presione el boton de "guardar"
-  // guardara la partida actual
-  const saveBoard = () => {
-    // traemos del localstora y convertimos a java script
-    // para poder comprobar si existe alguna partida cargada previamente
-    let save = loadSavedGameFromStorage();
-    let id = 0;
-    // si no existe se va a crear un array en el localstorage y agregar la posicion 0 con
-    // los valores de la partida
-    // si existe un array previo, vuelve agregar el array previo y le agrega una nueva posicion
-    if (save === null) {
-      saveGameInStorage([{ id: 1, board: board, turn: turn }]);
-    } else {
-      // obtenemos la posicion del id del ultimo elemento del array, para poder incrementar el id
-      id = save[save.length - 1].id;
-      saveGameInStorage([...save, { id: id + 1, board: board, turn: turn }]);
-    }
-    // volvemos a traer el array para guardar los valores actualizados
-    setSavedGame(loadSavedGameFromStorage());
-  };
-
-  const loadBoard = (index) => {
-    const save = loadSavedGameFromStorage();
-    const savedBoard = save[index].board;
-    const savedTurn = save[index].turn;
-    setBoard(savedBoard);
-    setTurn(savedTurn);
-  };
-
   const handleChange = (e) => {
     if (start) {
       alert("No puedes cambiar la configuracion con la simulacion iniciada");
@@ -167,8 +138,10 @@ function App() {
                         <p>Numero de Partida: {el.id}</p>
                         <p>Turno: {el.turn}</p>
                         <button
+                        // seleccionamos y actualizamos el estado 
+                        // al hacer click en una partida
                           onClick={() => {
-                            loadBoard(index);
+                            loadGame(index,setBoard,setTurn);
                           }}
                         >
                           {index}
@@ -190,7 +163,7 @@ function App() {
               </div>
             )}
           </Popup>
-          <button onClick={saveBoard}>Guardar</button>
+          <button onClick={() => {saveGame(board,turn,setSavedGame)} }>Guardar</button>
 
           <Popup
             trigger={<button>Configuracion</button>}
