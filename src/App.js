@@ -101,8 +101,8 @@ function App() {
     runSimulation(board);
   }, delay);
 
-  console.log(boardRows);
-  console.log(boardCols);
+  // console.log(boardRows);
+  // console.log(boardCols);
 
   const validate = () => {
     if (start) {
@@ -112,6 +112,27 @@ function App() {
     }
   };
 
+  const saveBoard = () =>{
+    console.log("guardar");
+    const save = JSON.parse(localStorage.getItem("save"));
+    if(save === null){
+      localStorage.setItem("save",JSON.stringify([{"id": 1,"board":board, "turn": turn}]));
+    }else{  
+      localStorage.setItem("save",JSON.stringify([...save,{"id": 1,"board":board, "turn": turn}]));
+    }
+  }
+
+  const loadBoard = () =>{
+    const save = localStorage.getItem("save");
+    console.log(save);
+    const convertData = JSON.parse(save);
+    const savedBoard = convertData[2].board;
+    const savedTurn = convertData[2].turn;
+    console.log(savedBoard);
+    setBoard(savedBoard);
+    setTurn(savedTurn);
+  }
+
   return (
     <section className="game-section">
       <div className="nav-bar">
@@ -119,6 +140,8 @@ function App() {
           <button onClick={startGame}>Iniciar</button>
           <button onClick={stopGame}>Detener</button>
           <button onClick={reset}>Reiniciar</button>
+          <button onClick={loadBoard}>Cargar</button>
+          <button onClick={saveBoard}>Guardar</button>
           <Popup trigger={<button>Configuracion</button>} modal closeOnDocumentClick={false} closeOnEscape={false}>
             {(close) => (
               <div className="modal">
