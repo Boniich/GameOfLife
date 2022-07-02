@@ -97,15 +97,24 @@ function App() {
     runSimulation(board);
   }, delay);
 
+  // Cuando se presione el boton de "guardar"
+  // guardara la partida actual
   const saveBoard = () => {
+    // traemos del localstora y convertimos a java script
+    // para poder comprobar si existe alguna partida cargada previamente
     const save = JSON.parse(localStorage.getItem("save"));
     let id = 0;
+    // si no existe se va a crear un array en el localstorage y agregar la posicion 0 con 
+    // los valores de la partida
+    // si existe un array previo, vuelve agregar el array previo y le agrega una nueva posicion 
     if (save === null) {
       localStorage.setItem(
         "save",
         JSON.stringify([{ id: 1, board: board, turn: turn }])
       );
+      
     } else {
+      // obtenemos la posicion del id del ultimo elemento del array, para poder incrementar el id
       id = save[save.length - 1].id;
       console.log("id", save[save.length - 1].id);
       localStorage.setItem(
