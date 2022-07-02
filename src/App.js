@@ -2,12 +2,13 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
 import { useInterval } from "./hooks/useInterval";
 import { printBoard } from "./services/printBoard/printBoard";
-import Popup from "reactjs-popup";
 import { positions } from "./consts";
 import {
+  deleteAllSavedGames,
   loadSavedGameFromStorage,
 } from "./services/localStorageMethods";
 import { loadGame, saveGame } from "./services/loadAndSaveGame";
+import { Modal } from "./components/commons/modal/Modal";
 
 function App() {
   const [board, setBoard] = useState();
@@ -119,113 +120,80 @@ function App() {
           <button onClick={stopGame}>Detener</button>
           <button onClick={reset}>Reiniciar</button>
 
-          <Popup
+          <Modal
             trigger={<button>Cargar</button>}
-            modal
-            closeOnDocumentClick={false}
-            closeOnEscape={false}
+            textHeader="Partidas Guardadas"
+            // agregamos un boton a la modal para poder eliminar todas las partidas guardas
+            extraButton={
+              <button
+                onClick={() => {
+                  deleteAllSavedGames(setSavedGame);
+                }}
+              >
+                Borrar todas las partidas
+              </button>
+            }
           >
-            {(close) => (
-              <div className="modal">
-                <button className="close" onClick={close}>
-                  &times;
-                </button>
-                <div className="header"> Configuracion</div>
-                <div className="content">
-                  {savedGame &&
-                    savedGame.map((el, index) => (
-                      <div key={index}>
-                        <p>Numero de Partida: {el.id}</p>
-                        <p>Turno: {el.turn}</p>
-                        <button
-                        // seleccionamos y actualizamos el estado 
-                        // al hacer click en una partida
-                          onClick={() => {
-                            loadGame(index,setBoard,setTurn);
-                          }}
-                        >
-                          {index}
-                        </button>
-                      </div>
-                    ))}
-                </div>
-                <div className="actions">
+            {savedGame &&
+              savedGame.map((el, index) => (
+                <div key={index}>
+                  <p>Numero de Partida: {el.id}</p>
+                  <p>Turno: {el.turn}</p>
                   <button
-                    className="button"
+                    // seleccionamos y actualizamos el estado
+                    // al hacer click en una partida
                     onClick={() => {
-                      console.log("modal closed ");
-                      close();
+                      loadGame(index, setBoard, setTurn);
                     }}
                   >
-                    close modal
+                    {index}
                   </button>
                 </div>
-              </div>
-            )}
-          </Popup>
-          <button onClick={() => {saveGame(board,turn,setSavedGame)} }>Guardar</button>
-
-          <Popup
-            trigger={<button>Configuracion</button>}
-            modal
-            closeOnDocumentClick={false}
-            closeOnEscape={false}
+              ))}
+          </Modal>
+          <button
+            onClick={() => {
+              saveGame(board, turn, setSavedGame);
+            }}
           >
-            {(close) => (
-              <div className="modal">
-                <button className="close" onClick={close}>
-                  &times;
-                </button>
-                <div className="header"> Carga una partida</div>
-                <div className="content">
-                  <div className="inputs-container">
-                    <label className="labels-inputs">Filas</label>
-                    <input
-                      type="range"
-                      name="boardRows"
-                      value={config.boardRows}
-                      onChange={handleChange}
-                    />
-                    <p className="show-data-input">{config.boardRows}</p>
-                  </div>
+            Guardar
+          </button>
 
-                  <div className="inputs-container">
-                    <label className="labels-inputs">Columnas</label>
-                    <input
-                      type="range"
-                      name="boardCols"
-                      value={config.boardCols}
-                      onChange={handleChange}
-                    />
-                    <p className="show-data-input">{config.boardCols}</p>
-                  </div>
+          <Modal trigger={<button>Configuracion</button>}>
+            <div className="inputs-container">
+              <label className="labels-inputs">Filas</label>
+              <input
+                type="range"
+                name="boardRows"
+                value={config.boardRows}
+                onChange={handleChange}
+              />
+              <p className="show-data-input">{config.boardRows}</p>
+            </div>
 
-                  <div className="inputs-container">
-                    <label className="labels-inputs">Delay</label>
-                    <input
-                      type="range"
-                      max={10000}
-                      name="delay"
-                      value={config.delay}
-                      onChange={handleChange}
-                    />
-                    <p className="show-data-input">{config.delay}</p>
-                  </div>
-                </div>
-                <div className="actions">
-                  <button
-                    className="button"
-                    onClick={() => {
-                      console.log("modal closed ");
-                      close();
-                    }}
-                  >
-                    close modal
-                  </button>
-                </div>
-              </div>
-            )}
-          </Popup>
+            <div className="inputs-container">
+              <label className="labels-inputs">Columnas</label>
+              <input
+                type="range"
+                name="boardCols"
+                value={config.boardCols}
+                onChange={handleChange}
+              />
+              <p className="show-data-input">{config.boardCols}</p>
+            </div>
+
+            <div className="inputs-container">
+              <label className="labels-inputs">Delay</label>
+              <input
+                type="range"
+                max={10000}
+                name="delay"
+                value={config.delay}
+                onChange={handleChange}
+              />
+              <p className="show-data-input">{config.delay}</p>
+            </div>
+          </Modal>
         </div>
         <div>
           <p>Generacion: {turn}</p>
