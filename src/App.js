@@ -9,6 +9,8 @@ import {
 } from "./services/localStorageMethods";
 import { loadGame, saveGame } from "./services/loadAndSaveGame";
 import { Modal } from "./components/commons/modal/Modal";
+import { InputBox } from "./components/subComponents/inputBox/InputBox";
+import { RenderBoard } from "./components/subComponents/renderBoard/RenderBoard";
 
 function App() {
   const [board, setBoard] = useState();
@@ -152,6 +154,8 @@ function App() {
               ))}
           </Modal>
           <button
+            // guarda la partida en curso
+            // esta funcion esta dentro de services/loadAndSaveGame
             onClick={() => {
               saveGame(board, turn, setSavedGame);
             }}
@@ -160,39 +164,9 @@ function App() {
           </button>
 
           <Modal trigger={<button>Configuracion</button>}>
-            <div className="inputs-container">
-              <label className="labels-inputs">Filas</label>
-              <input
-                type="range"
-                name="boardRows"
-                value={config.boardRows}
-                onChange={handleChange}
-              />
-              <p className="show-data-input">{config.boardRows}</p>
-            </div>
-
-            <div className="inputs-container">
-              <label className="labels-inputs">Columnas</label>
-              <input
-                type="range"
-                name="boardCols"
-                value={config.boardCols}
-                onChange={handleChange}
-              />
-              <p className="show-data-input">{config.boardCols}</p>
-            </div>
-
-            <div className="inputs-container">
-              <label className="labels-inputs">Delay</label>
-              <input
-                type="range"
-                max={10000}
-                name="delay"
-                value={config.delay}
-                onChange={handleChange}
-              />
-              <p className="show-data-input">{config.delay}</p>
-            </div>
+            {/* contiene todos los inputs sobre la configuracion
+             el archivo de esta funcion se encuentra en components/subComponents/inputBox */}
+            <InputBox config={config} handleChange={handleChange} />
           </Modal>
         </div>
         <div>
@@ -207,23 +181,9 @@ function App() {
           margin: "0 auto",
         }}
       >
-        {board &&
-          board.map((row, i) =>
-            row.map((col, k) => (
-              <div
-                key={`${i}-${k}`}
-                onClick={() => {
-                  let newBoard = JSON.parse(JSON.stringify(board));
-                  newBoard[i][k] = board[i][k] ? 0 : 1;
-                  setBoard(newBoard);
-                }}
-                className="circle"
-                style={{
-                  background: board[i][k] ? "blue" : "",
-                }}
-              ></div>
-            ))
-          )}
+        {/* renderizamos el tablero usando la matriz generado con printBoard
+        // este componente esta en components/subComponents/RenderBoard */}
+        <RenderBoard board={board} setBoard={setBoard} />
       </div>
     </section>
   );
