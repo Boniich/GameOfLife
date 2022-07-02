@@ -194,7 +194,7 @@ function App() {
                       type="range"
                       value={boardRows}
                       onChange={(e) =>
-                        validate(start) === false && setBoardRows(e.target.value)
+                        validate(start) === false && setBoardRows(Number.parseInt(e.target.value))
                       }
                     />
                     <p className="show-data-input">{boardRows}</p>
@@ -206,7 +206,7 @@ function App() {
                       type="range"
                       value={boardCols}
                       onChange={(e) =>
-                        validate(start) === false && setBoardCols(e.target.value)
+                        validate(start) === false && setBoardCols(Number.parseInt(e.target.value))
                       }
                     />
                     <p className="show-data-input">{boardCols}</p>
@@ -219,7 +219,7 @@ function App() {
                       max={10000}
                       value={delay}
                       onChange={(e) =>
-                        validate(start) === false && setDelay(e.target.value)
+                        validate(start) === false && setDelay(Number.parseInt(e.target.value))
                       }
                     />
                     <p className="show-data-input">{delay}</p>
