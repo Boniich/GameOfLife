@@ -5,6 +5,10 @@ import { printBoard } from "./services/printBoard/printBoard";
 import Popup from "reactjs-popup";
 import { validate } from "./services/validate/validate";
 import { positions } from "./consts";
+import {
+  loadSavedGameFromStorage,
+  saveGameInStorage,
+} from "./services/localStorageMethods";
 
 function App() {
   const [board, setBoard] = useState();
@@ -61,15 +65,13 @@ function App() {
 
   // cargamos la lista de partidas guardas si existen previamente
   useEffect(() => {
-    setSavedGame(JSON.parse(localStorage.getItem("save")));
+    setSavedGame(loadSavedGameFromStorage());
   }, []);
 
   // imprimimos el teclado cuando se inicia la pagina
   useEffect(() => {
     const board = printBoard(boardRows, boardCols);
-    console.log("row:", boardRows);
     setBoard(board);
-    console.log(board);
   }, [boardRows, boardCols]);
 
   const startGame = () => {
@@ -102,41 +104,28 @@ function App() {
   const saveBoard = () => {
     // traemos del localstora y convertimos a java script
     // para poder comprobar si existe alguna partida cargada previamente
-    const save = JSON.parse(localStorage.getItem("save"));
+    let save = loadSavedGameFromStorage();
     let id = 0;
-    // si no existe se va a crear un array en el localstorage y agregar la posicion 0 con 
+    // si no existe se va a crear un array en el localstorage y agregar la posicion 0 con
     // los valores de la partida
-    // si existe un array previo, vuelve agregar el array previo y le agrega una nueva posicion 
+    // si existe un array previo, vuelve agregar el array previo y le agrega una nueva posicion
     if (save === null) {
-      localStorage.setItem(
-        "save",
-        JSON.stringify([{ id: 1, board: board, turn: turn }])
-      );
-      
+      saveGameInStorage([{ id: 1, board: board, turn: turn }]);
     } else {
       // obtenemos la posicion del id del ultimo elemento del array, para poder incrementar el id
       id = save[save.length - 1].id;
-      console.log("id", save[save.length - 1].id);
-      localStorage.setItem(
-        "save",
-        JSON.stringify([...save, { id: id + 1, board: board, turn: turn }])
-      );
+      saveGameInStorage([...save, { id: id + 1, board: board, turn: turn }]);
     }
-    setSavedGame(JSON.parse(localStorage.getItem("save")));
+    setSavedGame(loadSavedGameFromStorage());
   };
 
   const loadBoard = (index) => {
-    const save = localStorage.getItem("save");
-    console.log(save);
-    const convertData = JSON.parse(save);
-    const savedBoard = convertData[index].board;
-    const savedTurn = convertData[index].turn;
-    console.log(savedBoard);
+    const save = loadSavedGameFromStorage();
+    const savedBoard = save[index].board;
+    const savedTurn = save[index].turn;
     setBoard(savedBoard);
     setTurn(savedTurn);
   };
-
-  console.log(savedGame);
 
   return (
     <section className="game-section">
@@ -164,7 +153,13 @@ function App() {
                       <div key={index}>
                         <p>Numero de Partida: {el.id}</p>
                         <p>Turno: {el.turn}</p>
-                        {/* <button onClick={() => {loadBoard(index)}}>{index}</button> */}
+                        <button
+                          onClick={() => {
+                            loadBoard(index);
+                          }}
+                        >
+                          {index}
+                        </button>
                       </div>
                     ))}
                 </div>
@@ -203,7 +198,8 @@ function App() {
                       type="range"
                       value={boardRows}
                       onChange={(e) =>
-                        validate(start) === false && setBoardRows(Number.parseInt(e.target.value))
+                        validate(start) === false &&
+                        setBoardRows(Number.parseInt(e.target.value))
                       }
                     />
                     <p className="show-data-input">{boardRows}</p>
@@ -215,7 +211,8 @@ function App() {
                       type="range"
                       value={boardCols}
                       onChange={(e) =>
-                        validate(start) === false && setBoardCols(Number.parseInt(e.target.value))
+                        validate(start) === false &&
+                        setBoardCols(Number.parseInt(e.target.value))
                       }
                     />
                     <p className="show-data-input">{boardCols}</p>
@@ -228,7 +225,8 @@ function App() {
                       max={10000}
                       value={delay}
                       onChange={(e) =>
-                        validate(start) === false && setDelay(Number.parseInt(e.target.value))
+                        validate(start) === false &&
+                        setDelay(Number.parseInt(e.target.value))
                       }
                     />
                     <p className="show-data-input">{delay}</p>
