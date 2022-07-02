@@ -3,6 +3,7 @@ import "./App.css";
 import { useInterval } from "./hooks/useInterval";
 import { printBoard } from "./services/printBoard/printBoard";
 import Popup from "reactjs-popup";
+import { validate } from "./services/validate/validate";
 
 // uso estas posiciones para determinar las celulas vecinas que pueden estar vivas o muertas
 const positions = [
@@ -107,17 +108,6 @@ function App() {
     runSimulation(board);
   }, delay);
 
-  // console.log(boardRows);
-  // console.log(boardCols);
-
-  const validate = () => {
-    if (start) {
-      alert("no podes cambiar la configuracion con la simulacion iniciada");
-    } else {
-      return false;
-    }
-  };
-
   const saveBoard = () => {
     const save = JSON.parse(localStorage.getItem("save"));
     let id = 0;
@@ -215,7 +205,7 @@ function App() {
                       type="range"
                       value={boardRows}
                       onChange={(e) =>
-                        validate() === false && setBoardRows(e.target.value)
+                        validate(start) === false && setBoardRows(e.target.value)
                       }
                     />
                     <p className="show-data-input">{boardRows}</p>
@@ -227,7 +217,7 @@ function App() {
                       type="range"
                       value={boardCols}
                       onChange={(e) =>
-                        validate() === false && setBoardCols(e.target.value)
+                        validate(start) === false && setBoardCols(e.target.value)
                       }
                     />
                     <p className="show-data-input">{boardCols}</p>
@@ -240,7 +230,7 @@ function App() {
                       max={10000}
                       value={delay}
                       onChange={(e) =>
-                        validate() === false && setDelay(e.target.value)
+                        validate(start) === false && setDelay(e.target.value)
                       }
                     />
                     <p className="show-data-input">{delay}</p>
