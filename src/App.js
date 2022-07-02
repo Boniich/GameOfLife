@@ -4,18 +4,7 @@ import { useInterval } from "./hooks/useInterval";
 import { printBoard } from "./services/printBoard/printBoard";
 import Popup from "reactjs-popup";
 import { validate } from "./services/validate/validate";
-
-// uso estas posiciones para determinar las celulas vecinas que pueden estar vivas o muertas
-const positions = [
-  [0, 1],
-  [0, -1],
-  [1, -1],
-  [-1, 1],
-  [1, 1],
-  [-1, -1],
-  [1, 0],
-  [-1, 0],
-];
+import { positions } from "./consts";
 
 function App() {
   const [board, setBoard] = useState();
