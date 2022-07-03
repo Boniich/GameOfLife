@@ -19,7 +19,7 @@ export const Modal = ({children,trigger,textHeader,extraButton}) =>{
             </div>
             <div className="actions">
               <button
-                className="button"
+                className="button config-close-button"
                 onClick={() => {
                   console.log("modal closed ");
                   close();

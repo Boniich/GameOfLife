@@ -76,7 +76,7 @@ function App() {
   useEffect(() => {
     const board = printBoard(config);
     setBoard(board);
-  }, [config.boardCols,config.boardRows]);
+  }, [config.boardCols, config.boardRows]);
 
   const startGame = () => {
     setStart(true);
@@ -118,16 +118,22 @@ function App() {
     <section className="game-section">
       <div className="nav-bar">
         <div className="button-container">
-          <button onClick={startGame}>Iniciar</button>
-          <button onClick={stopGame}>Detener</button>
-          <button onClick={reset}>Reiniciar</button>
+          <button className="button start-button" onClick={startGame}>
+            Iniciar
+          </button>
+          <button className="button stop-button" onClick={stopGame}>
+            Detener
+          </button>
+          <button className="button reset-button" onClick={reset}>
+            Reiniciar
+          </button>
 
           <Modal
-            trigger={<button>Cargar</button>}
+            trigger={<button className="button load-button">Cargar</button>}
             textHeader="Partidas Guardadas"
             // agregamos un boton a la modal para poder eliminar todas las partidas guardas
             extraButton={
-              <button
+              <button className="button delete-load-games"
                 onClick={() => {
                   deleteAllSavedGames(setSavedGame);
                 }}
@@ -154,6 +160,7 @@ function App() {
               ))}
           </Modal>
           <button
+            className="button save-button"
             // guarda la partida en curso
             // esta funcion esta dentro de services/loadAndSaveGame
             onClick={() => {
@@ -163,14 +170,21 @@ function App() {
             Guardar
           </button>
 
-          <Modal trigger={<button>Configuracion</button>}>
+          <Modal
+            trigger={
+              <button className="button config-close-button">Configuracion</button>
+            }
+            textHeader="Configuracion"
+          >
             {/* contiene todos los inputs sobre la configuracion
              el archivo de esta funcion se encuentra en components/subComponents/inputBox */}
             <InputBox config={config} handleChange={handleChange} />
           </Modal>
         </div>
-        <div>
-          <p>Generacion: {turn}</p>
+        <div className="generation-box">
+          <p>
+            Generacion: <span>{turn}</span>
+          </p>
         </div>
       </div>
       <div
