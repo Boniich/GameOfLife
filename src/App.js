@@ -6,7 +6,7 @@ import { positions } from "./consts";
 import { loadSavedGameFromStorage } from "./services/localStorageMethods";
 import {
   deletePrevGame,
-  loadGame,
+  loadPrevGame,
   saveGame,
   deleteAllSavedPrevGames,
 } from "./services/loadAndSaveGame";
@@ -16,7 +16,7 @@ import { RenderBoard } from "./components/subComponents/renderBoard/RenderBoard"
 
 function App() {
   const [board, setBoard] = useState();
-  const [savedGame, setSavedGame] = useState([]);
+  const [prevGame, setPrevGame] = useState([]);
   const [start, setStart] = useState(false);
   const [turn, setTurn] = useState(0);
   const [config, setConfig] = useState({
@@ -71,7 +71,7 @@ function App() {
 
   // cargamos la lista de partidas guardas si existen previamente
   useEffect(() => {
-    setSavedGame(loadSavedGameFromStorage());
+    setPrevGame(loadSavedGameFromStorage());
   }, []);
 
   // imprimimos el teclado cuando se inicia la pagina
@@ -138,15 +138,15 @@ function App() {
               <button
                 className="button delete-all-load-games"
                 onClick={() => {
-                  deleteAllSavedPrevGames(setSavedGame);
+                  deleteAllSavedPrevGames(setPrevGame);
                 }}
               >
                 Borrar todas las partidas
               </button>
             }
           >
-            {savedGame &&
-              savedGame.map((el, index) => (
+            {prevGame &&
+              prevGame.map((el, index) => (
                 <div className="load-game-card" key={index}>
                   <div className="load-game-card-content">
                     <p>Numero de Partida: {el.id}</p>
@@ -159,7 +159,7 @@ function App() {
                       // al hacer click en una partida
                       className="button load-button load-delete-button"
                       onClick={() => {
-                        loadGame(index, setBoard, setTurn);
+                        loadPrevGame(index, setBoard, setTurn);
                       }}
                     >
                       Cargar
@@ -167,7 +167,7 @@ function App() {
                     <button
                       className="button stop-button load-delete-button"
                       onClick={() => {
-                        deletePrevGame(el, setSavedGame);
+                        deletePrevGame(el, setPrevGame);
                       }}
                     >
                       Eliminar
@@ -181,7 +181,7 @@ function App() {
             // guarda la partida en curso
             // esta funcion esta dentro de services/loadAndSaveGame
             onClick={() => {
-              saveGame(board, turn, setSavedGame);
+              saveGame(board, turn, setPrevGame);
             }}
           >
             Guardar

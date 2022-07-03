@@ -6,7 +6,7 @@ import {
 } from "../localStorageMethods";
 
 // guardara la partida actual
-export const saveGame = (board, turn, setSavedGame) => {
+export const saveGame = (board, turn, setPrevGame) => {
   // traemos del localstora y convertimos a java script
   // para poder comprobar si existe alguna partida cargada previamente
   let save = loadSavedGameFromStorage();
@@ -22,11 +22,11 @@ export const saveGame = (board, turn, setSavedGame) => {
     saveGameInStorage([...save, { id: id + 1, board: board, turn: turn }]);
   }
   // volvemos a traer el array para guardar los valores actualizados
-  setSavedGame(loadSavedGameFromStorage());
+  setPrevGame(loadSavedGameFromStorage());
 };
 
 // cargamos una partida segun el index seleccionado en array map
-export const loadGame = (index, setBoard, setTurn) => {
+export const loadPrevGame = (index, setBoard, setTurn) => {
   const save = loadSavedGameFromStorage();
   const savedBoard = save[index].board;
   const savedTurn = save[index].turn;
@@ -34,17 +34,17 @@ export const loadGame = (index, setBoard, setTurn) => {
   setTurn(savedTurn);
 };
 
-export const deletePrevGame = (el, setSavedGame) => {
+export const deletePrevGame = (el, setPrevGame) => {
   if (window.confirm("Estas seguro que deseas borrar esta partida?")) {
     const newArray = loadSavedGameFromStorage().filter((e) => e.id !== el.id);
     saveGameInStorage([...newArray]);
-    setSavedGame([...newArray]);
+    setPrevGame([...newArray]);
   }
 };
 
-export const deleteAllSavedPrevGames = (setSavedGame) => {
-  if (window.confirm("Estas seguro que deseas borrar esta partida?")) {
+export const deleteAllSavedPrevGames = (setPrevGame) => {
+  if (window.confirm("Estas seguro que deseas borrar todas las partidas?")) {
     localStorage.removeItem("save");
-    setSavedGame([]);
+    setPrevGame([]);
   }
 };
