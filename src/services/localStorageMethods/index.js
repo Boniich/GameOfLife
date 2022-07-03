@@ -10,8 +10,3 @@ export const loadSavedGameFromStorage = () => {
   const savedGame = JSON.parse(localStorage.getItem("save"));
   return savedGame;
 };
-
-export const deleteAllSavedGames = (setSavedGame) => {
-  localStorage.removeItem("save");
-  setSavedGame([]);
-};

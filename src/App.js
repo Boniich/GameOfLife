@@ -3,11 +3,13 @@ import "./App.css";
 import { useInterval } from "./hooks/useInterval";
 import { printBoard } from "./services/printBoard/printBoard";
 import { positions } from "./consts";
+import { loadSavedGameFromStorage } from "./services/localStorageMethods";
 import {
-  deleteAllSavedGames,
-  loadSavedGameFromStorage,
-} from "./services/localStorageMethods";
-import { loadGame, saveGame } from "./services/loadAndSaveGame";
+  deletePrevGame,
+  loadGame,
+  saveGame,
+  deleteAllSavedPrevGames,
+} from "./services/loadAndSaveGame";
 import { Modal } from "./components/commons/modal/Modal";
 import { InputBox } from "./components/subComponents/inputBox/InputBox";
 import { RenderBoard } from "./components/subComponents/renderBoard/RenderBoard";
@@ -133,9 +135,10 @@ function App() {
             textHeader="Partidas Guardadas"
             // agregamos un boton a la modal para poder eliminar todas las partidas guardas
             extraButton={
-              <button className="button delete-load-games"
+              <button
+                className="button delete-all-load-games"
                 onClick={() => {
-                  deleteAllSavedGames(setSavedGame);
+                  deleteAllSavedPrevGames(setSavedGame);
                 }}
               >
                 Borrar todas las partidas
@@ -144,18 +147,32 @@ function App() {
           >
             {savedGame &&
               savedGame.map((el, index) => (
-                <div key={index}>
-                  <p>Numero de Partida: {el.id}</p>
-                  <p>Turno: {el.turn}</p>
-                  <button
-                    // seleccionamos y actualizamos el estado
-                    // al hacer click en una partida
-                    onClick={() => {
-                      loadGame(index, setBoard, setTurn);
-                    }}
-                  >
-                    {index}
-                  </button>
+                <div className="load-game-card" key={index}>
+                  <div className="load-game-card-content">
+                    <p>Numero de Partida: {el.id}</p>
+                    <p>Turno: {el.turn}</p>
+                    <p>Fecha: 20/2/2022</p>
+                  </div>
+                  <div className="load-buttons-container">
+                    <button
+                      // seleccionamos y actualizamos el estado
+                      // al hacer click en una partida
+                      className="button load-button load-delete-button"
+                      onClick={() => {
+                        loadGame(index, setBoard, setTurn);
+                      }}
+                    >
+                      Cargar
+                    </button>
+                    <button
+                      className="button stop-button load-delete-button"
+                      onClick={() => {
+                        deletePrevGame(el, setSavedGame);
+                      }}
+                    >
+                      Eliminar
+                    </button>
+                  </div>
                 </div>
               ))}
           </Modal>
@@ -172,7 +189,9 @@ function App() {
 
           <Modal
             trigger={
-              <button className="button config-close-button">Configuracion</button>
+              <button className="button config-close-button">
+                Configuracion
+              </button>
             }
             textHeader="Configuracion"
           >
