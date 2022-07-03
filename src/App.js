@@ -72,6 +72,9 @@ function App() {
 
       setBoard(boardCopy);
     },
+    // cuando las filas o columnas cambien de cantidad
+    // es necesario volver a crear la funcion para que esta sea llamada en memoria
+    // si no se hace, en algunas ocaciones puede ocurrir que la simulacion no funcione correctamente
     [config.boardRows, config.boardCols]
   );
 
