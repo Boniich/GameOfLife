@@ -1,3 +1,7 @@
+* {
+  margin: 0;
+}
+
 .game-section {
   margin-top: 70px;
   display: flex;
@@ -72,6 +76,24 @@
   border: 1px solid #cfcece;
 }
 
+.load-game-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 5px;
+  border-bottom: 1px solid rgb(212, 212, 212);
+}
+
+.load-game-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.load-game-card-content > p {
+  font-size: 14px;
+}
+
 .labels-inputs {
   font-size: 14px;
   color: #000;
@@ -100,6 +122,15 @@
   font-size: 14px;
   cursor: pointer;
   color: #fff;
+}
+
+.load-delete-button {
+  width: 80px;
+}
+
+.load-buttons-container {
+  display: flex;
+  gap: 5px;
 }
 
 .start-button {
@@ -152,7 +183,7 @@
   background: rgb(55, 167, 236);
 }
 
-.generation-box{
+.generation-box {
   display: flex;
   width: 130px;
   padding: 5px;
@@ -160,20 +191,18 @@
   align-items: center;
   border: 1px solid #ccc;
   border-radius: 30px;
-
-  
 }
 
-.generation-box > p{
+.generation-box > p {
   margin: 0;
 }
 
-.generation-box > p > span{
+.generation-box > p > span {
   font-weight: 600;
   padding: 3px;
 }
 
-.delete-load-games{
-  background: rgb(212, 19, 77);
-  width: 150px;
+.delete-all-load-games {
+  background: rgb(212, 25, 25);
+  width: 200px;
 }
