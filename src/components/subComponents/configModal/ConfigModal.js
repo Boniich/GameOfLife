@@ -6,7 +6,7 @@ import {
 import { Modal } from "../../commons/modal/Modal";
 import { InputBox } from "./inputBox/InputBox";
 
-export const ConfigModal = ({ config, handleChange, setConfig }) => {
+export const ConfigModal = ({ start, config, handleChange, setConfig }) => {
   return (
     <Modal
       trigger={
@@ -17,11 +17,15 @@ export const ConfigModal = ({ config, handleChange, setConfig }) => {
         <button
           className="button load-button"
           onClick={() => {
-            setConfig({
-              boardRows: defaultRowsValue,
-              boardCols: defaultColsValue,
-              delay: defaultDelayValue,
-            });
+            !start
+              ? setConfig({
+                  boardRows: defaultRowsValue,
+                  boardCols: defaultColsValue,
+                  delay: defaultDelayValue,
+                })
+              : window.alert(
+                  "No puedes cambiar la configuracion con la simulacion encendida"
+                );
           }}
         >
           Por Defecto

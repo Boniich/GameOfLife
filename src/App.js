@@ -156,6 +156,7 @@ function App() {
           {/* modal que contiene el boton de configuracion e internamente contiene los inputs de 
           fila,columna y delay*/}
           <ConfigModal
+            start={start}
             config={config}
             setConfig={setConfig}
             handleChange={handleChange}
