@@ -8,12 +8,10 @@ import {
   deletePrevGame,
   loadPrevGame,
   saveGame,
-  deleteAllSavedPrevGames,
 } from "./services/loadAndSaveGame";
-import { Modal } from "./components/commons/modal/Modal";
-import { InputBox } from "./components/subComponents/inputBox/InputBox";
 import { RenderBoard } from "./components/subComponents/renderBoard/RenderBoard";
-import { RenderPrevGameList } from "./components/subComponents/renderPrevGameList/RenderPrevGameList";
+import { PrevGameModal } from "./components/subComponents/PrevGameModal/PrevGameModal";
+import { ConfigModal } from "./components/subComponents/configModal/ConfigModa";
 
 function App() {
   const [board, setBoard] = useState();
@@ -131,33 +129,16 @@ function App() {
           <button className="button reset-button" onClick={reset}>
             Reiniciar
           </button>
-
-          <Modal
-            trigger={<button className="button load-button">Cargar</button>}
-            textHeader="Partidas Guardadas"
-            // agregamos un boton a la modal para poder eliminar todas las partidas guardas
-            extraButton={
-              <button
-                className="button delete-all-load-games"
-                onClick={() => {
-                  deleteAllSavedPrevGames(setPrevGame);
-                }}
-              >
-                Borrar todas las partidas
-              </button>
-            }
-          >
-            {/* renderiza la lista de partidas guardas o un msg que no existen partidas
-            este componente esa en subComponents/renderPrevGameList/ */}
-            <RenderPrevGameList
-              prevGame={prevGame}
-              setPrevGame={setPrevGame}
-              loadPrevGame={loadPrevGame}
-              setBoard={setBoard}
-              setTurn={setTurn}
-              deletePrevGame={deletePrevGame}
-            />
-          </Modal>
+          {/* modal que contiene el boton de cargar e internamente contiene la lista
+          de partidas guardadas */}
+          <PrevGameModal
+            prevGame={prevGame}
+            setPrevGame={setPrevGame}
+            loadPrevGame={loadPrevGame}
+            setBoard={setBoard}
+            setTurn={setTurn}
+            deletePrevGame={deletePrevGame}
+          />
           <button
             className="button save-button"
             // guarda la partida en curso
@@ -168,19 +149,9 @@ function App() {
           >
             Guardar
           </button>
-
-          <Modal
-            trigger={
-              <button className="button config-close-button">
-                Configuracion
-              </button>
-            }
-            textHeader="Configuracion"
-          >
-            {/* contiene todos los inputs sobre la configuracion
-             el archivo de esta funcion se encuentra en components/subComponents/inputBox */}
-            <InputBox config={config} handleChange={handleChange} />
-          </Modal>
+          {/* modal que contiene el boton de configuracion e internamente contiene los inputs de 
+          fila,columna y delay*/}
+          <ConfigModal config={config} handleChange={handleChange} />
         </div>
         <div className="generation-box">
           <p>
