@@ -11,7 +11,7 @@ import {
 } from "./services/loadAndSaveGame";
 import { RenderBoard } from "./components/subComponents/renderBoard/RenderBoard";
 import { PrevGameModal } from "./components/subComponents/PrevGameModal/PrevGameModal";
-import { ConfigModal } from "./components/subComponents/configModal/ConfigModa";
+import { ConfigModal } from "./components/subComponents/configModal/ConfigModal";
 
 function App() {
   const [board, setBoard] = useState();
