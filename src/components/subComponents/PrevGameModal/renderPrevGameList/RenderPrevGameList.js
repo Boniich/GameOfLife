@@ -19,7 +19,7 @@ export const RenderPrevGameList = ({
             </div>
             <div className="load-game-card-content">
               <p>Turno: {el.turn}</p>
-              <p>Fecha: 20/12/2022</p>
+              <p>Fecha: {el.date}</p>
             </div>
             <div className="load-buttons-container">
               <button
