@@ -13,6 +13,7 @@ import {
 import { Modal } from "./components/commons/modal/Modal";
 import { InputBox } from "./components/subComponents/inputBox/InputBox";
 import { RenderBoard } from "./components/subComponents/renderBoard/RenderBoard";
+import { RenderPrevGameList } from "./components/subComponents/renderPrevGameList/RenderPrevGameList";
 
 function App() {
   const [board, setBoard] = useState();
@@ -78,6 +79,7 @@ function App() {
   useEffect(() => {
     const board = printBoard(config);
     setBoard(board);
+    // renderizamos nuevamente cada vez que los valores de columnas y filas en la modal de configuracion cambien
   }, [config.boardCols, config.boardRows]);
 
   const startGame = () => {
@@ -116,8 +118,6 @@ function App() {
     }
   };
 
-  console.log(prevGame);
-
   return (
     <section className="game-section">
       <div className="nav-bar">
@@ -147,43 +147,16 @@ function App() {
               </button>
             }
           >
-            {prevGame.length > 0 ? (
-              prevGame.map((el, index) => (
-                <div className="load-game-card" key={index}>
-                  <div>
-                    <h3>{el.id}</h3>
-                  </div>
-                  <div className="load-game-card-content">
-                    <p>Turno: {el.turn}</p>
-                    <p>Fecha: 20/12/2022</p>
-                  </div>
-                  <div className="load-buttons-container">
-                    <button
-                      // seleccionamos y actualizamos el estado
-                      // al hacer click en una partida
-                      className="button load-button load-delete-button"
-                      onClick={() => {
-                        loadPrevGame(index, setBoard, setTurn);
-                      }}
-                    >
-                      Cargar
-                    </button>
-                    <button
-                      className="button stop-button load-delete-button"
-                      onClick={() => {
-                        deletePrevGame(el, setPrevGame);
-                      }}
-                    >
-                      Eliminar
-                    </button>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <span className="no-prev-game-msg">
-                No dispones de partidas previas
-              </span>
-            )}
+            {/* renderiza la lista de partidas guardas o un msg que no existen partidas
+            este componente esa en subComponents/renderPrevGameList/ */}
+            <RenderPrevGameList
+              prevGame={prevGame}
+              setPrevGame={setPrevGame}
+              loadPrevGame={loadPrevGame}
+              setBoard={setBoard}
+              setTurn={setTurn}
+              deletePrevGame={deletePrevGame}
+            />
           </Modal>
           <button
             className="button save-button"
