@@ -28,8 +28,7 @@ export const ConfigModal = ({ config, handleChange, setConfig }) => {
         </button>
       }
     >
-      {/* contiene todos los inputs sobre la configuracion
-         el archivo de esta funcion se encuentra en components/subComponents/inputBox */}
+      {/* contiene todos los inputs sobre la configuracion*/}
       <InputBox config={config} handleChange={handleChange} />
     </Modal>
   );

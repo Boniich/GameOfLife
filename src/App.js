@@ -34,44 +34,43 @@ function App() {
   const runningRef = useRef(start);
   runningRef.current = start;
 
-  const runSimulation = useCallback(
-    (board) => {
-      if (!runningRef.current) {
-        return;
-      }
+  // para evitar que la funcion sea creada cada vez que el componente se renderiza
+  // usamos useCallback para crear una funcion en memoria cada vez que que la matriz cambie
+  const runSimulation = useCallback((board) => {
+    if (!runningRef.current) {
+      return;
+    }
 
-      setTurn((turn) => (turn += 1));
-      let boardCopy = JSON.parse(JSON.stringify(board));
-      for (let i = 0; i < config.boardRows; i++) {
-        for (let j = 0; j < config.boardCols; j++) {
-          let neighbors = 0;
-          positions.forEach(([x, y]) => {
-            const newI = i + x;
-            const newJ = j + y;
+    setTurn((turn) => (turn += 1));
+    let boardCopy = JSON.parse(JSON.stringify(board));
+    for (let i = 0; i < config.boardRows; i++) {
+      for (let j = 0; j < config.boardCols; j++) {
+        let neighbors = 0;
+        positions.forEach(([x, y]) => {
+          const newI = i + x;
+          const newJ = j + y;
 
-            if (
-              newI >= 0 &&
-              newI < config.boardRows &&
-              newJ >= 0 &&
-              newJ < config.boardCols
-            ) {
-              neighbors += board[newI][newJ];
-            }
-          });
-          // si tiene menos de dos celulas vecinas vivias o mas de 3 muere la celula
-          if (neighbors < 2 || neighbors > 3) {
-            boardCopy[i][j] = 0;
-            // si hay tres celula vivias y una muerta, esta celula muerta, "vivira" al siguiente turno
-          } else if (boardCopy[i][j] === 0 && neighbors === 3) {
-            boardCopy[i][j] = 1;
+          if (
+            newI >= 0 &&
+            newI < config.boardRows &&
+            newJ >= 0 &&
+            newJ < config.boardCols
+          ) {
+            neighbors += board[newI][newJ];
           }
+        });
+        // si tiene menos de dos celulas vecinas vivias o mas de 3 muere la celula
+        if (neighbors < 2 || neighbors > 3) {
+          boardCopy[i][j] = 0;
+          // si hay tres celula vivias y una muerta, esta celula muerta, "vivira" al siguiente turno
+        } else if (boardCopy[i][j] === 0 && neighbors === 3) {
+          boardCopy[i][j] = 1;
         }
       }
+    }
 
-      setBoard(boardCopy);
-    },
-    [config.boardRows, config.boardCols]
-  );
+    setBoard(boardCopy);
+  }, []);
 
   // cargamos la lista de partidas guardas si existen previamente
   useEffect(() => {
