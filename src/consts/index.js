@@ -9,3 +9,7 @@ export const positions = [
   [1, 0],
   [-1, 0],
 ];
+
+export const defaultRowsValue = 30;
+export const defaultColsValue = 50;
+export const defaultDelayValue = 300;

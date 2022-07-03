@@ -2,7 +2,12 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
 import { useInterval } from "./hooks/useInterval";
 import { printBoard } from "./services/printBoard/printBoard";
-import { positions } from "./consts";
+import {
+  defaultColsValue,
+  defaultDelayValue,
+  defaultRowsValue,
+  positions,
+} from "./consts";
 import { loadSavedGameFromStorage } from "./services/localStorageMethods";
 import {
   deletePrevGame,
@@ -19,9 +24,9 @@ function App() {
   const [start, setStart] = useState(false);
   const [turn, setTurn] = useState(0);
   const [config, setConfig] = useState({
-    boardRows: 30,
-    boardCols: 50,
-    delay: 1000,
+    boardRows: defaultRowsValue,
+    boardCols: defaultColsValue,
+    delay: defaultDelayValue,
   });
 
   // creamos una referencia del valor de inicio y pausa para poder actualizar
@@ -151,7 +156,11 @@ function App() {
           </button>
           {/* modal que contiene el boton de configuracion e internamente contiene los inputs de 
           fila,columna y delay*/}
-          <ConfigModal config={config} handleChange={handleChange} />
+          <ConfigModal
+            config={config}
+            setConfig={setConfig}
+            handleChange={handleChange}
+          />
         </div>
         <div className="generation-box">
           <p>
