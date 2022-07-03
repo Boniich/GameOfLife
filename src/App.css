@@ -110,6 +110,12 @@
   padding: 0;
 }
 
+.no-prev-game-msg{
+  padding: 20px 8px;
+  font-size: 18px;
+  text-align: center;
+}
+
 .button {
   display: flex;
   justify-content: center;

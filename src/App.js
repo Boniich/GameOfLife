@@ -116,6 +116,8 @@ function App() {
     }
   };
 
+  console.log(prevGame);
+
   return (
     <section className="game-section">
       <div className="nav-bar">
@@ -145,13 +147,15 @@ function App() {
               </button>
             }
           >
-            {prevGame &&
+            {prevGame.length > 0 ? (
               prevGame.map((el, index) => (
                 <div className="load-game-card" key={index}>
+                  <div>
+                    <h3>{el.id}</h3>
+                  </div>
                   <div className="load-game-card-content">
-                    <p>Numero de Partida: {el.id}</p>
                     <p>Turno: {el.turn}</p>
-                    <p>Fecha: 20/2/2022</p>
+                    <p>Fecha: 20/12/2022</p>
                   </div>
                   <div className="load-buttons-container">
                     <button
@@ -174,7 +178,12 @@ function App() {
                     </button>
                   </div>
                 </div>
-              ))}
+              ))
+            ) : (
+              <span className="no-prev-game-msg">
+                No dispones de partidas previas
+              </span>
+            )}
           </Modal>
           <button
             className="button save-button"
