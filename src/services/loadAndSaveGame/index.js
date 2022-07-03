@@ -14,7 +14,7 @@ export const saveGame = (board, turn, setSavedGame) => {
   // si no existe se va a crear un array en el localstorage y agregar la posicion 0 con
   // los valores de la partida
   // si existe un array previo, vuelve agregar el array previo y le agrega una nueva posicion
-  if (save === null) {
+  if (save === null || save.length === 0) {
     saveGameInStorage([{ id: 1, board: board, turn: turn }]);
   } else {
     // obtenemos la posicion del id del ultimo elemento del array, para poder incrementar el id
