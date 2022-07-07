@@ -9,9 +9,13 @@ export const RenderPrevGameList = ({
   setBoard,
   setTurn,
 }) => {
+  // nos aseguramos que length no sea un valor null y haga caer el programa
+  // cuando se preciona el boton "cargar" y no existe un array en el localstorage
+  const length = prevGame === null ? 0 : prevGame.length;
+
   return (
     <>
-      {prevGame.length > 0 ? (
+      {length > 0 ? (
         prevGame.map((el, index) => (
           <div className="load-game-card" key={index}>
             <div>
